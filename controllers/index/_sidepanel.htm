@@ -1,0 +1,16 @@
+<div class="layout control-scrollpanel" id="cms-side-panel">
+    <div class="layout-cell">
+      <div class="layout-relative fix-button-container">
+            <!-- Components -->
+            <form
+              role="form"
+              class="layout"
+              data-content-id="components"
+              data-template-type="component"
+              data-type-icon="wn-icon-tags"
+              onsubmit="return false">
+              <?= $this->widget->componentList->render() ?>
+          </form>
+        </div>
+    </div>
+</div>

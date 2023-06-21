@@ -1,0 +1,8 @@
+# ===================================
+#  Configures the component list widget
+# ===================================
+
+descriptionProperty: description
+noRecordsMessage: 'verbant.livewire::lang.component.no_list_records'
+deleteConfirmation: 'cms::lang.partial.delete_confirm_multiple'
+itemType: component

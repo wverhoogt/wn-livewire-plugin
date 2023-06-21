@@ -1,0 +1,6 @@
+plugin:
+    name: 'verbant.livewire::lang.plugin.name'
+    description: 'verbant.livewire::lang.plugin.description'
+    author: 'Wim Verhoogt'
+    icon: wn-icon-cogs
+    replaces: {  }
