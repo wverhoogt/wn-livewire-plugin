@@ -1,5 +1,6 @@
 <?php namespace Verbant\Livewire\Classes;
 
+use Illuminate\View\View;
 use Livewire\Component;
 use Cms\Classes\CodeBase;
 
@@ -12,10 +13,14 @@ use Cms\Classes\CodeBase;
 
 class LivewireComponentCode extends Component
 {
-  public $view;
-
+  protected $view;
+  
   public function render()
   {
     return $this->view;
+  }
+  public function setView(View $view)
+  {
+    $this->view = $view;
   }
 }

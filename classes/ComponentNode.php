@@ -37,7 +37,6 @@ class ComponentNode extends TwigNode
       ->write("echo \$this->env->getExtension('Verbant\Livewire\Classes\Extension')->componentFunction(")
       ->subcompile($this->getNode('nodes')->getNode(0))
       ->write(", \$context['__livewire_component_params']")
-      ->write(", true")
       ->write(");\n")
     ;
 

@@ -12,6 +12,7 @@ use System\Twig\Engine;
 use Cms\Classes\Controller;
 use Cms\Classes\CmsException;
 use Cms\Classes\ComponentManager;
+use Livewire\LivewireBladeDirectives;
 use Verbant\Livewire\Classes\Component as LivewireComponent;
 
 /**
@@ -22,7 +23,6 @@ use Verbant\Livewire\Classes\Component as LivewireComponent;
  */
 class Extension extends TwigExtension
 {
-  protected Component $component;
   /**
    * The instanciated CMS controller
    */
@@ -50,7 +50,7 @@ class Extension extends TwigExtension
   public function getFunctions(): array
   {
     return [
-      new TwigSimpleFunction('component', [$this, 'componentFunction']),
+      // new TwigSimpleFunction('component', [$this, 'componentFunction']),
     ];
   }
 
@@ -61,6 +61,7 @@ class Extension extends TwigExtension
   {
     return [
       new ComponentTokenParser,
+      new BladeTokenParser,
     ];
   }
 
@@ -82,13 +83,10 @@ class Extension extends TwigExtension
    * @throws SystemException If the component cannot be found
    * @return mixed component contents or false if not throwing an exception.
    */
-  public function renderComponent($name, $parameters = [], $throwException = true)
+  public function renderComponent($name, $parameters = [])
   {
-    $vars = $this->controller->vars;
-    $this->controller->vars = array_merge($this->controller->vars, $parameters);
-    $lw = Livewire::mount($name, $this->controller->vars);
+    $lw = Livewire::mount($name, $parameters);
     $html = $lw->html();
-    $this->controller->vars = $vars;
     return $html;
   }
 }

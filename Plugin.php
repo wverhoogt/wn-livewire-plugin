@@ -6,20 +6,23 @@ use Backend;
 use Event;
 use App;
 use Config;
+use View;
 use Verbant\Livewire\Classes\LivewireComponentCode;
 use Backend\Classes\NavigationManager;
 use Backend\Models\UserRole;
 use System\Classes\PluginBase;
+use System\Classes\PluginManager;
 use Verbant\Livewire\Classes\Extension;
 use Verbant\Livewire\Classes\Component as LivewireComponent;
-use Verbant\Livewire\Classes\ThemeComponentResolver;
+use Verbant\Livewire\Classes\ComponentResolver;
 /**
  * Livewire Plugin Information File
  */
 class Plugin extends PluginBase
 {
   protected $pluginExtension;
-  protected $themeComponentResolver;
+  protected $componentResolver;
+
   /**
    * Returns information about this plugin.
    */
@@ -39,13 +42,16 @@ class Plugin extends PluginBase
   public function register(): void
   {
     Config::set('livewire.manifest_path', storage_path('framework/cache/livewire-components.php'));
+    Config::set('livewire_plugin.component_path', storage_path('framework/cache/plugin-components.php'));
     Config::set('livewire.class_namespace', "livewire");
     Config::set('livewire.asset_url', url(''));
     Config::set('livewire.app_url', url(''));
-    // spl_autoload_register([$this, 'findComponent']);
-    $this->themeComponentResolver = new ThemeComponentResolver;
-    Livewire::resolveMissingComponent([$this->themeComponentResolver, 'resolve']);
-    Livewire::listen('component.rendering', [$this->themeComponentResolver, 'onLivewireRender']);
+    App::singleton(ComponentResolver::class, function ($app) {
+      return new ComponentResolver;
+    });
+    $this->componentResolver = App::make(ComponentResolver::class);
+    Livewire::resolveMissingComponent([$this->componentResolver, 'resolve']);
+    Livewire::listen('component.rendering', [$this->componentResolver, 'onLivewireRender']);
   }
 
   /**
@@ -53,22 +59,46 @@ class Plugin extends PluginBase
    */
   public function boot(): void
   {
+    $pd = collect(PluginManager::instance()->getRegistrationMethodValues('registerLivewireComponents'));
+    $this->componentResolver->livewireComponents = $pd->reduce(function($c, $e) { return $c + $e; }, []);
     Event::listen('cms.page.start', function (\Cms\Classes\Controller $controller) {
       $twig = $controller->getTwig();
       $twig->addExtension(new LivewireExtension);
       $this->pluginExtension = new Extension;
       $this->pluginExtension->setController($controller);
       $twig->addExtension($this->pluginExtension);
-      $this->themeComponentResolver->twigEnvironment = $twig;
     });
+    // Event::listen('cms.page.beforeRenderPartial', function (\Cms\Classes\Controller $controller, string $name) {
+    //   $n = explode("::", $name);
+    //   if (count($n) === 2) {
+    //     $component = $controller->vars[$n[0]];
+    //   }
+    //   if (count($n) !== 2 || !isset($this->componentResolver->livewireComponents[get_class($component)])) {
+    //     return false;
+    //   }
+    //   $lwClass = $this->componentResolver->livewireComponents[get_class($component)]['LivewireClass'];
+    //   $this->componentResolver->componentCache[$lwClass] = $name;
+    //   View::addNamespace($n[0], $component->getPath());
+    //   Livewire::component($name, $lwClass);
+    //   return Livewire::mount($name, $controller->vars)->html();
+    // });
     Event::listen('backend.menu.extendItems', function (NavigationManager $navigationManager) {
-      $navigationManager->addSideMenuItems('WINTER.CMS', 'CMS', [[
+      $navigationManager->addSideMenuItems('winter.cms', 'cms', [[
         'label' => 'Livewire',
         'url' => 'javascript:;',
         'icon' => ''
       ]]);
     });
-    App::bind(\Illuminate\Routing\RouteCollectionInterface::class, function ($app) { return new \Illuminate\Routing\RouteCollection; });
+    App::bind(\Illuminate\Routing\RouteCollectionInterface::class, \Illuminate\Routing\RouteCollection::class);
+    View::addExtension('twig', 'twig');
+    $cacheDir = Config::get('view.compiled');
+    View::addNamespace( '__components', $cacheDir);
+    App::extend('twig.environment', function ($twig, $app) use ($cacheDir) {
+      $twig->addExtension(new LivewireExtension);
+      $twig->addExtension(new Extension);
+      $twig->setCache($cacheDir);
+      return $twig;
+    });
   }
 
   /**
