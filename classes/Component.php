@@ -26,18 +26,4 @@ class Component extends CmsCompoundObject
   {
     return LivewireComponentCode::class;
   }
-
-  public static function loadComponentClass($name)
-  {
-    if (str_contains($name, '\\') || ($component = Component::loadCached(Theme::getActiveTheme(), $name)) === null) {
-      return false;
-    }
-    $parser = new CodeParser($component);
-    $data = $parser->parse();
-    if (!class_exists($data['className'], false)) {
-      require_once $data['filePath'];
-    }
-    Livewire::component($name, $data['className']);
-    return $component;
-  }
 }

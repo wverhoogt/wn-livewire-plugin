@@ -15,6 +15,7 @@ use System\Classes\PluginManager;
 use Verbant\Livewire\Classes\Extension;
 use Verbant\Livewire\Classes\Component as LivewireComponent;
 use Verbant\Livewire\Classes\ComponentResolver;
+
 /**
  * Livewire Plugin Information File
  */
@@ -68,20 +69,6 @@ class Plugin extends PluginBase
       $this->pluginExtension->setController($controller);
       $twig->addExtension($this->pluginExtension);
     });
-    // Event::listen('cms.page.beforeRenderPartial', function (\Cms\Classes\Controller $controller, string $name) {
-    //   $n = explode("::", $name);
-    //   if (count($n) === 2) {
-    //     $component = $controller->vars[$n[0]];
-    //   }
-    //   if (count($n) !== 2 || !isset($this->componentResolver->livewireComponents[get_class($component)])) {
-    //     return false;
-    //   }
-    //   $lwClass = $this->componentResolver->livewireComponents[get_class($component)]['LivewireClass'];
-    //   $this->componentResolver->componentCache[$lwClass] = $name;
-    //   View::addNamespace($n[0], $component->getPath());
-    //   Livewire::component($name, $lwClass);
-    //   return Livewire::mount($name, $controller->vars)->html();
-    // });
     Event::listen('backend.menu.extendItems', function (NavigationManager $navigationManager) {
       $navigationManager->addSideMenuItems('winter.cms', 'cms', [[
         'label' => 'Livewire',
