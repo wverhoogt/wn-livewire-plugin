@@ -65,9 +65,6 @@ class Plugin extends PluginBase
     Event::listen('cms.page.start', function (\Cms\Classes\Controller $controller) {
       $twig = $controller->getTwig();
       $twig->addExtension(new LivewireExtension);
-      $this->pluginExtension = new Extension;
-      $this->pluginExtension->setController($controller);
-      $twig->addExtension($this->pluginExtension);
     });
     Event::listen('backend.menu.extendItems', function (NavigationManager $navigationManager) {
       $navigationManager->addSideMenuItems('winter.cms', 'cms', [[
@@ -82,7 +79,6 @@ class Plugin extends PluginBase
     View::addNamespace( '__components', $cacheDir);
     App::extend('twig.environment', function ($twig, $app) use ($cacheDir) {
       $twig->addExtension(new LivewireExtension);
-      $twig->addExtension(new Extension);
       $twig->setCache($cacheDir);
       return $twig;
     });

@@ -16,13 +16,7 @@ class ComponentResolver
 {
   
   public $livewireComponents;
-  public static $instance;
   public $componentCache = [];
-
-  public function __construct()
-  {
-    static::$instance = $this;
-  }
 
   public function resolve(string $name)
   {
