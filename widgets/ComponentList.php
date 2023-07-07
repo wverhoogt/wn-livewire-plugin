@@ -1,9 +1,9 @@
 <?php namespace Verbant\Livewire\Widgets;
 
-use Str;
-use Input;
-use Cms\Classes\Theme;
 use Backend\Classes\WidgetBase;
+use Cms\Classes\Theme;
+use Input;
+use Str;
 
 /**
  * component list widget.
@@ -39,7 +39,7 @@ class ComponentList extends WidgetBase
 
     public function updateList()
     {
-        return ['#'.$this->getId('plugin-model-list') => $this->makePartial('items', $this->getRenderData())];
+        return ['#' . $this->getId('plugin-model-list') => $this->makePartial('items', $this->getRenderData())];
     }
 
     /*
@@ -85,7 +85,7 @@ class ComponentList extends WidgetBase
 
     protected function getComponentList()
     {
-        // $components = 
+        // $components =
         // $result = [];
 
         // foreach ($models as $model) {
@@ -102,7 +102,7 @@ class ComponentList extends WidgetBase
     protected function getRenderData()
     {
         return [
-            'items' => $this->getData()
+            'items' => $this->getData(),
         ];
     }
 }

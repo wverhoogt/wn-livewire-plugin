@@ -2,7 +2,6 @@
 
 use Illuminate\View\View;
 use Livewire\Component;
-use Cms\Classes\CodeBase;
 
 /**
  * Parent class for PHP classes created for component PHP sections.
@@ -13,14 +12,26 @@ use Cms\Classes\CodeBase;
 
 class LivewireComponentCode extends Component
 {
-  protected $view;
-  
-  public function render()
-  {
-    return $this->view;
-  }
-  public function setView(View $view)
-  {
-    $this->view = $view;
-  }
+    protected $view;
+
+    /**
+     * Called by Livewirw
+     * @return View: the view, prepared by ComponentResolver
+     */
+    public function render()
+    {
+        return $this->view;
+    }
+
+    /**
+     * Setter for ComponentResolver to prepare the view
+     * the standard vierw resolver in Livewire doesn´t play nicw with WinterCms
+     *
+     * @param View $view
+     * @return void
+     */
+    public function setView(View $view)
+    {
+        $this->view = $view;
+    }
 }

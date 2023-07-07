@@ -1,9 +1,7 @@
 <?php namespace Verbant\Livewire\Classes;
 
 use Cms\Classes\CmsCompoundObject;
-use Cms\Classes\CodeParser;
 use Livewire;
-use Cms\Classes\Theme;
 
 /**
  * The Component Class
@@ -13,17 +11,17 @@ use Cms\Classes\Theme;
  */
 class Component extends CmsCompoundObject
 {
-  /**
-   * @var string The container name associated with the model, eg: pages.
-   */
-  protected $dirName = 'livewire';
-  
-  /**
-   * Returns name of a PHP class to us a parent for the PHP class created for the object's PHP section.
-   * @return string Returns the class name.
-   */
-  public function getCodeClassParent()
-  {
-    return LivewireComponentCode::class;
-  }
+    /**
+     * @var string The container name associated with the model, eg: pages.
+     */
+    protected $dirName = 'livewire';
+
+    /**
+     * Returns name of a PHP class to us a parent for the PHP class created for the object's PHP section.
+     * @return string Returns the class name.
+     */
+    public function getCodeClassParent()
+    {
+        return LivewireComponentCode::class;
+    }
 }
