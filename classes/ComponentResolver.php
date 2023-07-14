@@ -15,8 +15,6 @@ use View as ViewFactory;
 class ComponentResolver
 {
     /**
-     * Undocumented variable
-     *
      * @var [array] registered components
      * each value is an array with keys: 'LivewireClass', 'ViewName' and 'ViewPath' which shoud be provided by the plugin
      */
