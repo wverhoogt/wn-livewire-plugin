@@ -79,34 +79,6 @@ class Plugin extends PluginBase
     }
 
     /**
-     * Registers any frontend components implemented in this plugin.
-     */
-    public function registerComponents(): array
-    {
-        return []; // Remove this line to activate
-
-        return [
-            'Verbant\Livewire\Components\MyComponent' => 'myComponent',
-        ];
-    }
-
-    /**
-     * Registers any backend permissions used by this plugin.
-     */
-    public function registerPermissions(): array
-    {
-        return []; // Remove this line to activate
-
-        return [
-            'verbant.livewire.some_permission' => [
-                'tab' => 'verbant.livewire::lang.plugin.name',
-                'label' => 'verbant.livewire::lang.permissions.some_permission',
-                'roles' => [UserRole::CODE_DEVELOPER, UserRole::CODE_PUBLISHER],
-            ],
-        ];
-    }
-
-    /**
      * Registers backend navigation items for this plugin.
      */
     public function registerNavigation(): array
@@ -121,7 +93,7 @@ class Plugin extends PluginBase
 
                 'sideMenu' => [
                     'components' => [
-                        'label' => 'components',
+                        'label' => 'Components',
                         'icon' => 'icon-database',
                         'url' => 'javascript:;',
                         'attributes' => ['data-menu-item' => 'components'],

@@ -13,6 +13,6 @@
     ],
     "require": {
         "php": ">=8.2",
-        "enflow/livewire-twig": "~3.0"
+        "enflow/livewire-twig": "~3.1"
     }
 }

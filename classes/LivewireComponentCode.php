@@ -25,7 +25,7 @@ class LivewireComponentCode extends Component
 
     /**
      * Setter for ComponentResolver to prepare the view
-     * the standard vierw resolver in Livewire doesn´t play nicw with WinterCms
+     * the standard view resolver in Livewire doesn´t play nice with WinterCms
      *
      * @param View $view
      * @return void
