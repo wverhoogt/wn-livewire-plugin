@@ -1,14 +1,12 @@
 # Livewire for WinterCMS
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/enflow/livewire-twig.svg?style=flat-square)][def]
-
-The `wn/livewire-twig` package provides the option to load Livewire components in your Twig templates.
+The `verbant/wn-livewire-plugin` package provides the option to load Livewire components in WinterCMS projects.
 
 ## Installation
 You can install the package via composer:
 
 ``` bash
-composer require enflow/livewire-twig
+composer require verbant/wn-livewire-plugin
 ```
 
 ## Usage
@@ -24,10 +22,10 @@ Component and backend Livewire components require registration, so that Livewire
 ```php
     'component name' => ['LivewireClass' => Class of Livewire, 'ViewName' => 'name of view in components|controllers/component name', 'ViewPath' => "full path to this view"];
 ```
-#### Plugin component usage
+#### Component usage
 A plugin can define a component which has both Livewire-markup and a Livewire PHP-class. You can still have other component partials, and render these in the usual way using the ```twig {% partial %} ``` twig directive. The Livewire-markup is rendered by the {% component %} directive and renders the markup as defined as the ViewName during registration.
 
-#### Plugin backend usage
+### Plugin backend usage
 A plugin can have a backend controller which supports Livewire components. The markup will probably in the controllers/controller name directory. The Livewire PHP-class could be there as well. To render the Livewire-component, call
 ```php
 $this->renderLivewire("name", [optional arguments]); somewhere in a PHP markup-file.
@@ -50,9 +48,9 @@ Add the following tags in the `head` tag, and before the end `body` tag in your 
 </html>
 ```
 
-### Examples
+## Examples
 
-#### Theme example
+### Theme example
 Create a Livewire component by choosing ¨Livewire¨ from the top bar en then ¨Add +¨ from the sidebar. Name it counter.
 On the markup tab, enter:
 ```twig
@@ -91,7 +89,7 @@ Create a page and on the markup tab enter:
 ```
 And add the {{ livewireStyles() }} and {{ livewireScripts() }} on this page or on a layout, used by it.
 
-#### Plugin component example
+### Plugin component example
 Create a plugin and a component named ¨lw¨ within that plugin. In the Plugin.php file include:
 ```php
 <?php namespace YourNamespace\PluginName;
@@ -183,7 +181,7 @@ You can now add this component to a CMS page by dragging it from the side bar. N
 {% component 'lw' count=5 %}
 ```
 
-#### Backend example
+### Backend example
 Create a plugin and a controller named ¨lwc¨ within that plugin. In the Plugin.php file include:
 ```php
 <?php namespace YourNamespace\PluginName;
@@ -271,25 +269,7 @@ $this->renderLivewire("lwc", [optional value for the component]);
 ```
 Note that for the backend you do not need to add the { livewireStyles() }} and {{ livewireScripts() }} directives.
 
-## Todo
-- [ ] Implement support for `key` tracking (probably not before Livewire v3)
-- [ ] Tests.
-
-## Testing
-``` bash
-$ composer test
-```
-
-## Contributing
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security
-If you discover any security related issues, please email michel@enflow.nl instead of using the issue tracker.
-
-## Credit
-- [Wim Verhoogt](https://github.com/wverhoogt)
-
 ## License
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[def]: https://packagist.org/packages/enflow/livewire-twig
+[def]: https://packagist.org/packages/verbant/wn-livewire-plugin
