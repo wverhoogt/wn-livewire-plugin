@@ -1,6 +1,7 @@
 <?php namespace Verbant\Livewire\Traits;
 
-use Livewire;
+use Livewire\Livewire;
+
 /**
  * Trait to add a default onRender to plugin components. Called by Livewire
  */
@@ -13,6 +14,7 @@ trait LivewireComponent
      */
     public function onRender()
     {
-        return Livewire::mount($this->name, array_merge($this->controller->vars, $this->properties))->html();
+        $key = $this->property('key');
+        return Livewire::mount($this->name, array_merge($this->controller->vars, $this->properties), $key);
     }
 }

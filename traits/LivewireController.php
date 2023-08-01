@@ -1,7 +1,8 @@
 <?php namespace Verbant\Livewire\Traits;
 
-use Block;
-use Livewire;
+use Enflow\LivewireTwig\LivewireExtension;
+use Livewire\Livewire;
+use Winter\Storm\Support\Facades\Block;
 
 /**
  * trait for backend controllers. Adds a rendering function to easily render LiveWire components in the backend
@@ -20,10 +21,12 @@ trait LivewireController
     public function renderLivewire($name, $parms = [])
     {
         if (!isset($this->vars['livewireInjected'])) {
-            Block::append('head', Livewire::styles());
-            Block::append('head', Livewire::scripts());
+            $ext = app(LivewireExtension::class);
+            Block::append('head', $ext->livewireStyles());
+            Block::append('head', $ext->livewireScripts());
             $this->vars['livewireInjected'] = true;
         }
-        return Livewire::mount($name, $parms)->html();
+        $key = $parms['key'] ?? null;
+        return Livewire::mount($name, $parms, $key);
     }
 }

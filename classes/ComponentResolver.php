@@ -2,10 +2,9 @@
 
 use Cms\Classes\CodeParser;
 use Cms\Classes\Theme;
-use Config;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\View as FacadesView;
 use Illuminate\View\View;
-use View as ViewFactory;
+use Winter\Storm\Support\Facades\Config as FacadesConfig;
 
 /**
  * resolves component names to component classes and view path names. 
@@ -32,7 +31,7 @@ class ComponentResolver
         if (isset($this->livewireComponents[$name])) {
             $class = $this->livewireComponents[$name]['LivewireClass'];
             $this->componentCache[$class] = "$name::{$this->livewireComponents[$name]['ViewName']}";
-            ViewFactory::addNamespace($name, $this->livewireComponents[$name]['ViewPath']);
+            FacadesView::addNamespace($name, $this->livewireComponents[$name]['ViewPath']);
             return $class;
         }
         if (($component = Component::loadCached(Theme::getActiveTheme(), $name)) === null) {
@@ -53,17 +52,19 @@ class ComponentResolver
      * @param [type] $class
      * @return void
      */
-    public function onLivewireRender($class)
+    public function render($class) : ?View
     {
         $className = get_class($class);
+        $v = null;
         if (isset($this->componentCache[$className])) {
             $component = $this->componentCache[$className];
             if (is_string($component)) {
-                $class->setView(ViewFactory::make($component));
+                $v = FacadesView::make($component);
             } else {
-                $class->setView($this->createViewFromString($component->markup));
+                $v = $this->createViewFromString($component->markup);
             }
         }
+        return $v;
     }
 
     /**
@@ -74,13 +75,13 @@ class ComponentResolver
      */
     protected function createViewFromString($contents): View
     {
-        $directory = Config::get('view.compiled');
+        $directory = FacadesConfig::get('view.compiled');
         if (!is_file($viewFile = $directory . '/' . sha1($contents) . '.twig')) {
             if (!is_dir($directory)) {
                 mkdir($directory, 0755, true);
             }
             file_put_contents($viewFile, $contents);
         }
-        return ViewFactory::make('__components::' . basename($viewFile, '.twig'));
+        return FacadesView::make('__components::' . basename($viewFile, '.twig'));
     }
 }

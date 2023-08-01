@@ -1,17 +1,14 @@
 <?php namespace Verbant\Livewire;
 
-use App;
-use Backend;
-use Backend\Classes\NavigationManager;
-use Backend\Models\UserRole;
-use Config;
+// use Backend\Classes\NavigationManager;
+use Backend\Facades\Backend;
 use Enflow\LivewireTwig\LivewireExtension;
-use Event;
-use Livewire;
+use Illuminate\Support\Facades\View;
 use System\Classes\PluginBase;
 use System\Classes\PluginManager;
 use Verbant\Livewire\Classes\ComponentResolver;
-use View;
+use Winter\Storm\Support\Facades\Config;
+use Winter\Storm\Support\Facades\Event;
 
 /**
  * Livewire Plugin Information File
@@ -36,17 +33,7 @@ class Plugin extends PluginBase
      */
     public function register(): void
     {
-        Config::set('livewire.manifest_path', storage_path('framework/cache/livewire-components.php'));
         Config::set('livewire_plugin.component_path', storage_path('framework/cache/plugin-components.php'));
-        Config::set('livewire.class_namespace', "livewire");
-        Config::set('livewire.asset_url', url(''));
-        Config::set('livewire.app_url', url(''));
-        App::singleton(ComponentResolver::class, function ($app) {
-            return new ComponentResolver;
-        });
-        $this->componentResolver = App::make(ComponentResolver::class);
-        Livewire::resolveMissingComponent([$this->componentResolver, 'resolve']);
-        Livewire::listen('component.rendering', [$this->componentResolver, 'onLivewireRender']);
     }
 
     /**
@@ -55,27 +42,33 @@ class Plugin extends PluginBase
     public function boot(): void
     {
         $pd = collect(PluginManager::instance()->getRegistrationMethodValues('registerLivewireComponents'));
-        $this->componentResolver->livewireComponents = $pd->reduce(function ($c, $e) {return $c + $e;}, []);
-        Event::listen('cms.page.start', function (\Cms\Classes\Controller $controller) {
-            $twig = $controller->getTwig();
-            $twig->addExtension(new LivewireExtension);
-        });
-        Event::listen('backend.menu.extendItems', function (NavigationManager $navigationManager) {
-            $navigationManager->addSideMenuItems('winter.cms', 'cms', [[
-                'label' => 'Livewire',
-                'url' => 'javascript:;',
-                'icon' => '',
-            ]]);
-        });
-        App::bind(\Illuminate\Routing\RouteCollectionInterface::class, \Illuminate\Routing\RouteCollection::class);
+        $componentResolver = new ComponentResolver;
+        $componentResolver->livewireComponents = $pd->reduce(function ($c, $e) {return $c + $e;}, []);
+        // Event::listen('backend.menu.extendItems', function (NavigationManager $navigationManager) {
+        //     $navigationManager->addSideMenuItems('winter.cms', 'cms', [[
+        //         'label' => 'Livewire',
+        //         'url' => 'javascript:;',
+        //         'icon' => '',
+        //     ]]);
+        // });
+        $this->app->bind(\Illuminate\Routing\RouteCollectionInterface::class, \Illuminate\Routing\RouteCollection::class);
         View::addExtension('twig', 'twig');
         $cacheDir = Config::get('view.compiled');
         View::addNamespace('__components', $cacheDir);
-        App::extend('twig.environment', function ($twig, $app) use ($cacheDir) {
-            $twig->addExtension(new LivewireExtension);
-            $twig->setCache($cacheDir);
-            return $twig;
+        $this->app->booted(function() use ($cacheDir) {
+            $ext = new LivewireExtension;
+            Event::listen('cms.page.start', function (\Cms\Classes\Controller $controller) use ($ext) {
+                $twig = $controller->getTwig();
+                $twig->addExtension($ext);
+            });
+            $this->app->extend('twig.environment', function ($twig, $app) use ($cacheDir, $ext) {
+                $twig->addExtension($ext);
+                $twig->setCache($cacheDir);
+                return $twig;
+            });
         });
+        app('livewire')->resolveMissingComponent([$componentResolver, 'resolve']);
+        $this->app->instance(ComponentResolver::class, $componentResolver);
     }
 
     /**

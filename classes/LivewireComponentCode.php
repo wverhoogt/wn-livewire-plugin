@@ -12,26 +12,12 @@ use Livewire\Component;
 
 class LivewireComponentCode extends Component
 {
-    protected $view;
-
     /**
-     * Called by Livewirw
+     * Called by Livewire
      * @return View: the view, prepared by ComponentResolver
      */
-    public function render()
+    public function render(ComponentResolver $resolver): ?View
     {
-        return $this->view;
-    }
-
-    /**
-     * Setter for ComponentResolver to prepare the view
-     * the standard view resolver in Livewire doesn´t play nice with WinterCms
-     *
-     * @param View $view
-     * @return void
-     */
-    public function setView(View $view)
-    {
-        $this->view = $view;
+        return $resolver->render($this);
     }
 }
